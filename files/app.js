@@ -4,7 +4,8 @@ const app = express();
 // Serves Express Yourself website
 app.use(express.static('public'));
 
-const { getElementById, seedElements } = require('./utils');
+const { getElementById, getIndexById, updateElement,
+  seedElements, createElement } = require('./utils');
 
 const expressions = [];
 seedElements(expressions, 'expressions');
@@ -19,13 +20,20 @@ app.get('/expressions', (req, res, next) => {
 
 app.get('/expressions/:id', (req, res, next) => {
   const foundExpression = getElementById(req.params.id, expressions);
-  
-  console.log(foundExpression);
-  
-  if(foundExpression){
+  if (foundExpression) {
     res.send(foundExpression);
-  }else{
-    res.status(404).send('Expression not found')
+  } else {
+    res.status(404).send();
+  }
+});
+
+app.put('/expressions/:id', (req, res, next) => {
+  const expressionIndex = getIndexById(req.params.id, expressions);
+  if (expressionIndex !== -1) {
+    updateElement(req.params.id, req.query, expressions);
+    res.send(expressions[expressionIndex]);
+  } else {
+    res.status(404).send();
   }
 });
 
