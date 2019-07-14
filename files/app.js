@@ -9,6 +9,8 @@ const { getElementById, getIndexById, updateElement,
 
 const expressions = [];
 seedElements(expressions, 'expressions');
+const animals = [];
+seedElements(animals, 'animals');
 
 const PORT = process.env.PORT || 4001;
 // Use static server to serve the Express Yourself Website
@@ -47,6 +49,16 @@ app.post('/expressions', (req, res, next) => {
   }
 });
 
+app.delete('/expressions/:id', (req, res, next) => {
+  const expressionIndex = getIndexById(req.params.id, expressions);
+  if (expressionIndex !== -1) {
+    expressions.splice(expressionIndex, 1);
+    res.status(204).send();
+  } else {
+    res.status(404).send();
+  }
+});
+
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Listening on port ${PORT}`); 
 });
