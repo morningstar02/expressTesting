@@ -1,23 +1,32 @@
 const express = require('express');
 const app = express();
-const { seedElements } = require('./utils');
 
 // Serves Express Yourself website
 app.use(express.static('public'));
+
+const { getElementById, seedElements } = require('./utils');
+
+const expressions = [];
+seedElements(expressions, 'expressions');
 
 const PORT = process.env.PORT || 4001;
 // Use static server to serve the Express Yourself Website
 app.use(express.static('public'));
 
-const expressions = [];
-seedElements(expressions, 'animals');
-
-// Get all expressions
 app.get('/expressions', (req, res, next) => {
-  // console.log(req);
-  console.log(expressions);
   res.send(expressions);
+});
+
+app.get('/expressions/:id', (req, res, next) => {
+  const foundExpression = getElementById(req.params.id, expressions);
   
+  console.log(foundExpression);
+  
+  if(foundExpression){
+    res.send(foundExpression);
+  }else{
+    res.status(404).send('Expression not found')
+  }
 });
 
 app.listen(PORT, () => {
