@@ -5,7 +5,7 @@ const app = express();
 app.use(express.static('public'));
 
 const { getElementById, getIndexById, updateElement,
-  seedElements, createElement } = require('./utils');
+        seedElements, createElement } = require('./utils');
 
 const expressions = [];
 seedElements(expressions, 'expressions');
@@ -34,6 +34,16 @@ app.put('/expressions/:id', (req, res, next) => {
     res.send(expressions[expressionIndex]);
   } else {
     res.status(404).send();
+  }
+});
+
+app.post('/expressions', (req, res, next) => {
+  const receivedExpression = createElement('expressions', req.query);
+  if (receivedExpression) {
+    expressions.push(receivedExpression);
+    res.status(201).send(receivedExpression);
+  } else {
+    res.status(400).send();
   }
 });
 
